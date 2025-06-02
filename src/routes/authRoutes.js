@@ -164,10 +164,22 @@ router.post(
  *             type: object
  *             required:
  *               - password
+ *               - confirmPassword
  *             properties:
  *               password:
  *                 type: string
- *                 minLength: 6
+ *                 minLength: 8
+ *                 example: StrongP@ssw0rd
+ *                 description: >
+ *                   Must be at least 8 characters and contain:
+ *                   - one uppercase letter
+ *                   - one lowercase letter
+ *                   - one number
+ *                   - one special character
+ *               confirmPassword:
+ *                 type: string
+ *                 example: StrongP@ssw0rd
+ *                 description: Must match the password
  *     responses:
  *       200:
  *         description: Password reset successful
@@ -201,9 +213,18 @@ router.post(
  *             properties:
  *               currentPassword:
  *                 type: string
+ *                 minLength: 8
+ *                 example: StrongP@ssw0rd
+ *                 description: >
+ *                   Must be at least 8 characters and contain:
+ *                   - one uppercase letter
+ *                   - one lowercase letter
+ *                   - one number
+ *                   - one special character
  *               newPassword:
  *                 type: string
- *                 minLength: 6
+ *                 example: StrongerP@ssw0rd
+ *                 description: Must match the password
  *     responses:
  *       200:
  *         description: Password changed successfully

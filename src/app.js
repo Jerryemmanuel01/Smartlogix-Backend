@@ -5,7 +5,6 @@ import swaggerUi from "swagger-ui-express";
 import { specs } from "./config/swagger.js";
 import { connectDB } from "./config/database.js";
 import authRoutes from "./routes/authRoutes.js";
-import externalApiRoutes from "./routes/externalApiRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 
 // Load environment variables
@@ -31,7 +30,6 @@ app.use(
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/external", externalApiRoutes);
 
 // Error handling
 app.use(errorHandler);
