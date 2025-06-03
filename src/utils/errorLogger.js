@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-const logDir = path.join(process.cwd(), "src", "logs");
+const logDir = path.join(process.cwd(), "logs");
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir);
 }
