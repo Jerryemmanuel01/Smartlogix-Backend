@@ -3,8 +3,8 @@ import crypto from "crypto";
 import User from "../models/User.js";
 import { sendResetPasswordEmail } from "../services/emailService.js";
 
-const generateToken = (id, email) => {
-  return jwt.sign({ id, email }, process.env.JWT_SECRET, {
+const generateToken = (id, email, role) => {
+  return jwt.sign({ id, email, role }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRATION,
   });
 };
@@ -29,7 +29,7 @@ export const register = async (req, res, next) => {
     });
 
     // Generate token
-    const token = generateToken(user.id, user.email);
+    const token = generateToken(user.id, user.email, user.role);
 
     res.status(201).json({
       status: "success",
@@ -63,7 +63,7 @@ export const login = async (req, res, next) => {
     await user.save();
 
     // Generate token
-    const token = generateToken(user.id, user.email);
+    const token = generateToken(user.id, user.email, user.role);
 
     res.json({
       status: "success",
@@ -154,7 +154,7 @@ export const resetPassword = async (req, res, next) => {
     await user.save();
 
     // Generate new token
-    const newToken = generateToken(user.id, user.email);
+    const newToken = generateToken(user.id, user.email, user.role);
 
     res.json({
       status: "success",
