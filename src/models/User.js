@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import bcrypt from "bcryptjs";
 import sequelize from "../config/database.js";
+import Order from "./Order.js";
 
 const User = sequelize.define(
   "User",
@@ -13,7 +14,6 @@ const User = sequelize.define(
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
       validate: {
         len: [3, 30],
       },
@@ -29,7 +29,7 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        len: [6, 100],
+        len: [8, 100],
       },
     },
     role: {
@@ -89,5 +89,5 @@ User.prototype.toJSON = function () {
   delete values.resetPasswordExpires;
   return values;
 };
-
+User.hasMany(Order, { foreignKey: "userId" });
 export default User;
