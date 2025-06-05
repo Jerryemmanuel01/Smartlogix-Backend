@@ -5,6 +5,8 @@ import swaggerUi from "swagger-ui-express";
 import { specs } from "./config/swagger.js";
 import { connectDB } from "./config/database.js";
 import authRoutes from "./routes/authRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import userRoutes from "./routes/adminRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 
 // Load environment variables
@@ -14,7 +16,7 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors());  
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -30,6 +32,8 @@ app.use(
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/user", userRoutes);
 
 // Error handling
 app.use(errorHandler);
