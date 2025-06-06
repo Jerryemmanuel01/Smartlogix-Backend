@@ -6,7 +6,7 @@ import { specs } from "./config/swagger.js";
 import { connectDB } from "./config/database.js";
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
-import userRoutes from "./routes/adminRoutes.js";
+import userRoutes from "./routes/generalRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 
 // Load environment variables
@@ -33,7 +33,7 @@ app.use(
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/user", userRoutes);
+app.use("/api/driver", userRoutes);
 
 // Error handling
 app.use(errorHandler);

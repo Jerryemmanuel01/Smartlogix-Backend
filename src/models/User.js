@@ -89,5 +89,5 @@ User.prototype.toJSON = function () {
   delete values.resetPasswordExpires;
   return values;
 };
-User.hasMany(Order, { foreignKey: "userId" });
+User.hasMany(Order, { foreignKey: "driverId" });
 export default User;
