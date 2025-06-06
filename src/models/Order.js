@@ -31,8 +31,8 @@ const Order = sequelize.define("Order", {
   status: {
     type: DataTypes.ENUM(
       "Pending",
-      "Picked Up",
-      "En Route",
+      "Picked-Up",
+      "En-Route",
       "Delivered",
       "Failed"
     ),

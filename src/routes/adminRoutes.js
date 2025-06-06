@@ -1,6 +1,6 @@
-import express from "express"
+import express from "express";
 import { authorize, protect } from "../middleware/authMiddleware.js";
-import { createDelivery } from "../controllers/adminController.js";
+import { createDelivery, getOrders } from "../controllers/adminController.js";
 
 const router = express.Router();
 
@@ -53,4 +53,38 @@ const router = express.Router();
 
 router.post("/create-delivery", protect, authorize("admin"), createDelivery);
 
-export default router
+/**
+ * @swagger
+ * /admin/orders:
+ *   get:
+ *     summary: Retrieve orders
+ *     tags: [Admin]
+ *     description: |
+ *       Returns all orders if no status is specified.
+ *       If a status query parameter is passed, it returns orders filtered by that status.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [pending, picked-up, en-Route, delivered, failed]
+ *         description: Filter orders by status
+ *     responses:
+ *       200:
+ *         description: List of orders
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Order'
+ *       401:
+ *         description: Unauthorized (No or invalid token)
+ *       403:
+ *         description: Forbidden (Insufficient role)
+ */
+router.get("/orders", protect, authorize("admin"), getOrders);
+
+export default router;
