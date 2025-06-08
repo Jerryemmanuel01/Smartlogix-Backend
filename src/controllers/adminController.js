@@ -60,3 +60,75 @@ export const getOrders = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getDrivers = async (req, res, next) => {
+  try {
+    const drivers = await User.findAll({
+      where: { role: "driver" },
+      attributes: { exclude: ["password"] },
+    });
+
+    if (!drivers) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "Error getting drivers" });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: "Drivers fetched successfully",
+      data: drivers,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getDriverById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const driver = await User.findByPk(id, {
+      attributes: { exclude: ["password"] },
+    });
+
+    if (!driver) {
+      return res.status(404).json({
+        status: "error",
+        message: "Driver not found!",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: "Driver fetched successfully",
+      data: driver,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteDriver = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const driver = await User.findByPk(id);
+
+    if (!driver) {
+      return res.status(404).json({
+        status: "error",
+        message: "Driver not found!",
+      });
+    }
+
+    await driver.destroy();
+
+    return res.status(200).json({
+      status: "success",
+      message: "Driver deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
