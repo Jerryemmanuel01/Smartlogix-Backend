@@ -1,10 +1,9 @@
 import express from "express";
-import { getProfile } from "../controllers/generalControllers.js";
+import { getProfile, getDelivery, acceptRejectDelivery, updateDeliveryStatus } from "../controllers/generalControllers.js";
 import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// routes here
 /**
  * @swagger
  * /driver/profile:
@@ -18,64 +17,130 @@ const router = express.Router();
  *     responses:
  *       200:
  *         description: Profile fetched successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: string
- *                   example: success
- *                 message:
- *                   type: string
- *                   example: Profile fetched successfully
- *                 data:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                       format: uuid
- *                       example: 736c7381-89d0-4d9c-a9c2-32d656d9d8fc
- *                     username:
- *                       type: string
- *                       example: donard stack
- *                     email:
- *                       type: string
- *                       example: 01devj@gmail.com
- *                     role:
- *                       type: string
- *                       example: driver
- *                     avatar:
- *                       type: string
- *                       nullable: true
- *                       example: null
- *                     isActive:
- *                       type: boolean
- *                       example: true
- *                     lastLogin:
- *                       type: string
- *                       format: date-time
- *                       example: 2025-06-05T20:47:15.000Z
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                     updatedAt:
- *                       type: string
- *                       format: date-time
  *       401:
  *         description: Unauthorized - Missing or invalid token
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: string
- *                   example: error
- *                 message:
- *                   type: string
- *                   example: Unauthorized access
  */
 router.get("/profile", protect, getProfile);
+
+/**
+ * @swagger
+ * /driver/deliveries/{id}:
+ *   get:
+ *     summary: Get a single delivery by ID
+ *     tags:
+ *       - Driver
+ *     description: Returns details of a specific delivery if accessible by the authenticated driver.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the delivery to retrieve
+ *     responses:
+ *       200:
+ *         description: Delivery details
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (not the assigned driver)
+ *       404:
+ *         delivery: Delivery not found
+ */
+router.get("/deliveries/:id", protect, getDelivery);
+
+/**
+ * @swagger
+ * /driver/deliveries/{id}/accept-reject:
+ *   patch:
+ *     summary: Accept or reject a delivery assignment
+ *     tags:
+ *       - Driver
+ *     description: Allows the assigned driver to accept or reject a delivery.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the delivery
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - action
+ *             properties:
+ *               action:
+ *                 type: string
+ *                 enum: [accept, reject]
+ *                 example: accept
+ *     responses:
+ *       200:
+ *         description: Delivery status updated
+ *       400:
+ *         description: Bad request (invalid action)
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (not the assigned driver)
+ *       404:
+ *         description: Delivery not found
+ */
+router.patch("/deliveries/:id/accept-reject", protect, acceptRejectDelivery);
+
+/**
+ * @swagger
+ * /driver/deliveries/{id}/status:
+ *   patch:
+ *     summary: Update delivery status
+ *     tags:
+ *       - Driver
+ *     description: Allows the assigned driver to update the delivery status.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the delivery
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [Picked-Up, En-Route, Delivered, Failed]
+ *                 example: Delivered
+ *               failureReason:
+ *                 type: string
+ *                 example: "Wrong address provided"
+ *                 description: Required if status is Failed
+ *     responses:
+ *       200:
+ *         description: Delivery status updated
+ *       400:
+ *         description: Bad request (invalid status or missing failure reason)
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (not the assigned driver)
+ *       404:
+ *         description: Delivery not found
+ */
+router.patch("/deliveries/:id/status", protect, updateDeliveryStatus);
 
 export default router;
