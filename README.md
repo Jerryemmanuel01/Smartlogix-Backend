@@ -1,6 +1,6 @@
-# 🚚 SmartLogix
+# 🚚 DELIVEREASE
 
-**SmartLogix** is a lightweight logistics coordination platform built as a capstone project for the **Tech Crush Internship**. It provides a simple way for administrators to assign deliveries to drivers and enables drivers to update the delivery status — without requiring live GPS or location tracking.
+**Deliverease** is a lightweight logistics coordination platform built as a capstone project for the **Tech Crush Internship**. It provides a simple way for administrators to assign deliveries to drivers and enables drivers to update the delivery status — without requiring live GPS or location tracking.
 
 ---
 

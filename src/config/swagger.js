@@ -7,10 +7,10 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Smartlogix API",
+      title: "DELIVEREASE API",
       version: "1.0.0",
       description:
-        "SmartLogix is a lightweight logistics coordination platform that allows admins to assign deliveries to drivers and enables drivers to update delivery statuses without live tracking.",
+        "Deliverease is a lightweight logistics coordination platform that allows admins to assign deliveries to drivers and enables drivers to update delivery statuses without live tracking.",
       contact: {
         name: "API Support",
         url: "http://localhost:" + process.env.PORT + "/api-docs",
