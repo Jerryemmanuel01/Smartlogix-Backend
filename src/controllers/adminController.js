@@ -65,7 +65,7 @@ export const getDrivers = async (req, res, next) => {
   try {
     const drivers = await User.findAll({
       where: { role: "driver" },
-      attributes: { exclude: ["password"] },
+      include: [{ model: Order, as: "orders" }],
     });
 
     if (!drivers) {
@@ -89,7 +89,7 @@ export const getDriverById = async (req, res, next) => {
     const { id } = req.params;
 
     const driver = await User.findByPk(id, {
-      attributes: { exclude: ["password"] },
+      include: [{ model: Order, as: "orders" }],
     });
 
     if (!driver) {
