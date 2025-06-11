@@ -35,3 +35,136 @@ export const getProfile = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getDelivery = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const user = req.user;
+
+    const delivery = await Order.findByPk(id);
+
+    if (!delivery) {
+      return res.status(404).json({
+        status: "error",
+        message: "Delivery not found",
+      });
+    }
+
+    // Check if the user is the assigned driver or an admin
+    if (delivery.driverId !== user.id && user.role !== "admin") {
+      return res.status(403).json({
+        status: "error",
+        message: "Unauthorized to view this delivery",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "Delivery fetched successfully",
+      data: delivery,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const acceptRejectDelivery = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { action } = req.body;
+    const user = req.user;
+
+    if (!["accept", "reject"].includes(action)) {
+      return res.status(400).json({
+        status: "error",
+        message: "Invalid action. Use 'accept' or 'reject'",
+      });
+    }
+
+    const delivery = await Order.findByPk(id);
+
+    if (!delivery) {
+      return res.status(404).json({
+        status: "error",
+        message: "Delivery not found",
+      });
+    }
+
+    if (delivery.driverId !== user.id || user.role !== "driver") {
+      return res.status(403).json({
+        status: "error",
+        message: "Unauthorized to update this delivery",
+      });
+    }
+
+    if (action === "reject") {
+      delivery.accept = false;
+    }
+    if (action === "accept") {
+      delivery.accept = true;
+    }
+
+    await delivery.save();
+    res.status(200).json({
+      status: "success",
+      message: "Delivery status updated",
+      data: delivery,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateDeliveryStatus = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { status, failureReason } = req.body;
+    const user = req.user;
+
+    const validStatuses = ["Picked-Up", "En-Route", "Delivered", "Failed"];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({
+        status: "error",
+        message:
+          "Invalid status. Use 'Picked-Up', 'En-Route', 'Delivered', or 'Failed'",
+      });
+    }
+
+    const delivery = await Order.findByPk(id);
+
+    if (!delivery) {
+      return res.status(404).json({
+        status: "error",
+        message: "Delivery not found",
+      });
+    }
+
+    if (delivery.driverId !== user.id || user.role !== "driver") {
+      return res.status(403).json({
+        status: "error",
+        message: "Unauthorized to update this delivery",
+      });
+    }
+
+    if (status === "Failed" && !failureReason) {
+      return res.status(400).json({
+        status: "error",
+        message: "Failure reason is required for 'Failed' status",
+      });
+    }
+
+    delivery.status = status;
+    if (status === "Failed") {
+      delivery.failedReason = failureReason;
+    }
+
+    await delivery.save();
+    res.status(200).json({
+      status: "success",
+      message: "Delivery status updated",
+      data: delivery,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
