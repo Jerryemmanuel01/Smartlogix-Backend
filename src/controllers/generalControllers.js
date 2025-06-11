@@ -100,6 +100,9 @@ export const acceptRejectDelivery = async (req, res, next) => {
     if (action === "reject") {
       delivery.accept = false;
     }
+    if (action === "accept") {
+      delivery.accept = true;
+    }
 
     await delivery.save();
     res.status(200).json({
