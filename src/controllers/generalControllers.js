@@ -97,11 +97,8 @@ export const acceptRejectDelivery = async (req, res, next) => {
       });
     }
 
-    if (action === "accept") {
-      delivery.status = "Picked-Up";
-    } else {
-      delivery.status = "Pending"; // Reset to Pending for reassignment
-      delivery.driverId = null; // Unassign driver
+    if (action === "reject") {
+      delivery.accept = false;
     }
 
     await delivery.save();
@@ -125,7 +122,8 @@ export const updateDeliveryStatus = async (req, res, next) => {
     if (!validStatuses.includes(status)) {
       return res.status(400).json({
         status: "error",
-        message: "Invalid status. Use 'Picked-Up', 'En-Route', 'Delivered', or 'Failed'",
+        message:
+          "Invalid status. Use 'Picked-Up', 'En-Route', 'Delivered', or 'Failed'",
       });
     }
 
